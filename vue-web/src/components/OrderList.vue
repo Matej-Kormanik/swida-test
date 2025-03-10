@@ -1,8 +1,10 @@
 <script setup lang="ts">
   import Order from "@/components/Order.vue";
   import api from "@/config/axios.ts";
-  import {onMounted, ref} from "vue";
+  import {onMounted, ref, defineProps, watch} from "vue";
   import type {IOrder} from "@/model/Order.ts";
+
+  const props = defineProps<{ refresh: number }>()
 
   const orders = ref<Array<IOrder>>([]);
   const error = ref<string|null>("");
@@ -20,6 +22,7 @@
       loading.value = false;
     }
   };
+  watch(()=> props.refresh, getOrders)
   onMounted(getOrders);
 </script>
 
@@ -27,7 +30,7 @@
 
 <template>
   <div class="order-list">
-    <p v-if="loading">Načítavam...</p>
+    <p v-if="loading">Loading...</p>
     <p v-if="error" class="error">{{ error }}</p>
     <Order
         v-else
@@ -44,5 +47,6 @@
 <style scoped>
   .order-list {
     border: 1px solid black;
+    min-width: 600px
   }
 </style>

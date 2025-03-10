@@ -1,10 +1,12 @@
-from rest_framework import generics, status
+from django.shortcuts import get_object_or_404
+from rest_framework import status
 from rest_framework.response import Response
-from api.models import Order
-from api.serializers import OrderSerializer
 from rest_framework.views import APIView
+from api.serializers import OrderSerializer
+from .models import Order, Waypoint
+from .serializers import WaypointSerializer
 
-#
+
 # class BlogPostListCreateAPIView(generics.ListCreateAPIView):
 #     queryset = BlogPost.objects.all()
 #     serializer_class = BlogPostSerializer
@@ -33,5 +35,23 @@ class OrderView(APIView):
         serializer = OrderSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()  # Uloží nový Order do databázy
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class WaypointListCreateView(APIView):
+    def get(self, request, order_id):
+        """Získa zoznam všetkých waypointov pre danú objednávku."""
+        waypoints = Waypoint.objects.filter(order_id=order_id)
+        serializer = WaypointSerializer(waypoints, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, order_id):
+        """Vytvorí nový waypoint pre danú objednávku."""
+        order = get_object_or_404(Order, id=order_id)  # Overenie, či objednávka existuje
+        serializer = WaypointSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(order=order)  # Uloženie s priradeným order_id
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

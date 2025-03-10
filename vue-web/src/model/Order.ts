@@ -1,7 +1,7 @@
 import type {IWaypoint} from "@/model/Waypoint.ts";
 
 export interface IOrder {
-    id: number;
+    id?: number;
     number: number
     customer: string;
     date: string;

@@ -11,7 +11,7 @@ export interface IWaypoint {
     type: WaypointType;
 }
 
-export class WaypointImpl implements Waypoint {
+export class WaypointImpl implements IWaypoint {
     private readonly _id: number;
     private readonly _location: string;
     private readonly _orderId: number;
