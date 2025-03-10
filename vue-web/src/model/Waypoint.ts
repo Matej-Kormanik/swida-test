@@ -1,17 +1,17 @@
 
 export enum WaypointType {
-    DELIVERY = "delivery",
-    PICKUP = "pickup",
+    DELIVERY = "DELIVERY",
+    PICKUP = "PICKUP",
 }
 
 export interface IWaypoint {
-    id: number;
+    id?: number;
     location: string;
-    orderId: number;
+    order: number;
     type: WaypointType;
 }
 
-export class WaypointImpl implements IWaypoint {
+/*export class WaypointImpl implements IWaypoint {
     private readonly _id: number;
     private readonly _location: string;
     private readonly _orderId: number;
@@ -39,4 +39,4 @@ export class WaypointImpl implements IWaypoint {
     get type(): WaypointType {
         return this._type;
     }
-}
+}*/

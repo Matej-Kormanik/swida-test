@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, defineEmits } from 'vue'
+import {defineEmits, ref} from 'vue'
 import type {IOrder} from "@/model/Order.ts";
 import api from "@/config/axios.ts";
+import {type IWaypoint, WaypointType} from "@/model/Waypoint.ts";
 
 const orderNumber = ref<string>('')
 const customer = ref<string>('')
@@ -22,10 +23,34 @@ const submitOrder = async () => {
   }
   const {data} = await api.post<IOrder>('/orders/', newOrder);
   console.log(data);
-  if ((showPickup.value || showDelivery.value) && (pickup.value || delivery.value)) {
-    const response = await api.post<IOrder[]>(`/orders/${data.id!}/waypoints`, newOrder);
+  if (showPickup.value && pickup.value) {
+    const pickupWaypoint: IWaypoint = {
+      location: pickup.value,
+      order: data.id!,
+      type: WaypointType.PICKUP
+    }
+    await api.post<IWaypoint>(`/orders/${data.id!}/waypoints/`, pickupWaypoint);
   }
-  emit('orderCreated', data)
+  if (showDelivery.value && delivery.value) {
+    const deliveryWaypoint: IWaypoint = {
+      location: delivery.value,
+      order: data.id!,
+      type: WaypointType.DELIVERY
+    }
+    await api.post<IWaypoint>(`/orders/${data.id!}/waypoints/`, deliveryWaypoint);
+  }
+  emit('orderCreated', data);
+  resetForm();
+}
+
+const resetForm = ()=> {
+  orderNumber.value = ''
+  customer.value = ''
+  orderDate.value = ''
+  pickup.value = ''
+  delivery.value = ''
+  showPickup.value = false
+  showDelivery.value = false
 }
 </script>
 
