@@ -10,6 +10,7 @@
 1. Navigate to the vue-web folder
 2. `npm install`
 3. `npm run dev`
+4. Inside browser, navigate to *http://localhost:5173/*
 
 ## Possible improvements
 * Adding User model and authentication
