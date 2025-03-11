@@ -13,33 +13,46 @@ const delivery = ref<string>('')
 const showPickup = ref<boolean>(false);
 const showDelivery = ref<boolean>(false);
 
-const emit = defineEmits(['orderCreated'])
+const emit = defineEmits(['createOrder'])
 
-const submitOrder = async () => {
+function prepareOrder() {
   const newOrder: IOrder = {
     number: +orderNumber.value,
     customer: customer.value,
     date: orderDate.value,
   }
-  const {data} = await api.post<IOrder>('/orders/', newOrder);
-  console.log(data);
-  if (showPickup.value && pickup.value) {
-    const pickupWaypoint: IWaypoint = {
-      location: pickup.value,
-      order: data.id!,
-      type: WaypointType.PICKUP
+  return newOrder;
+}
+
+const submitOrder = async () => {
+  try {
+    const {data} = await api.post<IOrder>('/orders/', prepareOrder());
+    if (showPickup.value && pickup.value) {
+      const pickupWaypoint: IWaypoint = {
+        location: pickup.value,
+        order: data.id!,
+        type: WaypointType.PICKUP
+      }
+      await api.post<IWaypoint>(`/orders/${data.id!}/waypoints/`, pickupWaypoint);
     }
-    await api.post<IWaypoint>(`/orders/${data.id!}/waypoints/`, pickupWaypoint);
-  }
-  if (showDelivery.value && delivery.value) {
-    const deliveryWaypoint: IWaypoint = {
-      location: delivery.value,
-      order: data.id!,
-      type: WaypointType.DELIVERY
+    if (showDelivery.value && delivery.value) {
+      const deliveryWaypoint: IWaypoint = {
+        location: delivery.value,
+        order: data.id!,
+        type: WaypointType.DELIVERY
+      }
+      await api.post<IWaypoint>(`/orders/${data.id!}/waypoints/`, deliveryWaypoint);
     }
-    await api.post<IWaypoint>(`/orders/${data.id!}/waypoints/`, deliveryWaypoint);
+    emit('createOrder', "ok");
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      emit('createOrder', error.message);
+      console.error(error.message);
+    } else {
+      console.error("An unknown error occurred", error);
+      emit('createOrder', "An unknown error occurred");
+    }
   }
-  emit('orderCreated', data);
   resetForm();
 }
 
@@ -176,10 +189,10 @@ const resetForm = ()=> {
 }
 .show-button {
   padding: 12px;
-  background-color: transparent; /* Remove background */
-  color: #25aac6; /* Set text color */
+  background-color: transparent;
+  color: #25aac6;
   font-size: 16px;
-  border: 2px solid #25aac6; /* Add border */
+  border: 2px solid #25aac6;
   border-radius: 5px;
   cursor: pointer;
   margin-top: 20px;

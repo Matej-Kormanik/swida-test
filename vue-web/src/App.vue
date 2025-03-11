@@ -2,17 +2,16 @@
     import OrderList from "@/components/OrderList.vue";
     import OrderForm from "@/components/OrderForm.vue";
     import {ref} from "vue";
+    import Banner from "@/ui/Banner.vue";
 
     const refreshTrigger = ref(0)
-    const showBanner = ref(false);
+    const bannerMsg = ref<string|undefined>();
 
-    const refreshOrders = () => {
+    const createOrderHandler = (msg: string) => {
       refreshTrigger.value++;
-      showBanner.value = true; // Zobrazíme banner
-
-      // Skryť banner po 3 sekundách
+      bannerMsg.value = msg;
       setTimeout(() => {
-        showBanner.value = false;
+        bannerMsg.value = undefined;
       }, 3000);
     }
 </script>
@@ -21,13 +20,11 @@
 
 <template>
   <h1>Order management system</h1>
-  <div v-if="showBanner" class="banner">✅ Order successfully created!</div>
-
-
+  <Banner v-if="bannerMsg" :msg="bannerMsg"/>
 
   <main>
     <OrderList :refresh="refreshTrigger"/>
-    <OrderForm @orderCreated="refreshOrders"/>
+    <OrderForm @createOrder="createOrderHandler"/>
   </main>
 
 
@@ -49,15 +46,4 @@
     padding-top: 2.6rem;
     font-weight: 500;
   }
-  .banner {
-    background-color: #4caf50;
-    color: white;
-    padding: 10px;
-    margin: 10px 0;
-    text-align: center;
-    border-radius: 5px;
-    font-weight: bold;
-    transition: opacity 0.5s;
-  }
-
 </style>
