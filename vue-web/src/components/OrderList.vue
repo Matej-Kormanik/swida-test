@@ -10,9 +10,23 @@
   const error = ref<string|null>("");
   const loading = ref<boolean>(true);
 
+  const orderNumberFilter = ref<string>("");
+  const customerFilter = ref<string>("");
+
+  const getFilters = () => {
+    const params: Record<string, string> = {};
+    if (orderNumberFilter.value.trim()) {
+      params.number = orderNumberFilter.value.trim();
+    }
+    if (customerFilter.value.trim()) {
+      params.customer = customerFilter.value.trim();
+    }
+    return params;
+  }
+
   const getOrders = async () => {
     try {
-      const ordersResponse = await api.get<IOrder[]>('/orders/');
+      const ordersResponse = await api.get<IOrder[]>('/orders/', {params: getFilters()});
       orders.value = ordersResponse.data;
     } catch (e) {
       error.value = "Error fetching orders";
@@ -21,8 +35,9 @@
     finally {
       loading.value = false;
     }
-  };
-  watch(()=> props.refresh, getOrders)
+  }
+  // watch([orderNumberFilter, customerFilter], getOrders, { deep: true });
+  watch(() => props.refresh, getOrders);
   onMounted(getOrders);
 </script>
 
@@ -30,6 +45,12 @@
 
 <template>
   <div class="order-list">
+    <div class="filters">
+      <input v-model="orderNumberFilter" placeholder="Filter by Order Number" />
+      <input v-model="customerFilter" placeholder="Filter by Customer" />
+      <button @click="getOrders">Apply Filters</button>
+    </div>
+
     <p v-if="loading">Loading...</p>
     <p v-if="error" class="error">{{ error }}</p>
     <Order
@@ -47,5 +68,30 @@
 <style scoped>
   .order-list {
     min-width: 600px
+  }
+  .filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .filters input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  .filters button {
+    padding: 8px 12px;
+    background-color: #25aac6;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  .filters button:hover {
+    background-color: #1a8099;
   }
 </style>

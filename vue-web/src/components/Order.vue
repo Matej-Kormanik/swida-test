@@ -61,7 +61,7 @@ const closeModal = () => (showModal.value = false);
   padding: 20px;
 }
 .header {
-  background: #007bff;
+  background: #25aac6;
   color: white;
   padding: 10px;
   border-radius: 8px;

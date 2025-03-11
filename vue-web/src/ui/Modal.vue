@@ -41,17 +41,20 @@ const emit = defineEmits(["close"]);
   width: 100%;
   margin-top: 20px;
   padding: 10px;
-  background: #007bff;
-  color: white;
-  border: none;
+  background: transparent;
+  color: #25aac6;
+  border: 2px solid #25aac6;
   border-radius: 5px;
   cursor: pointer;
   font-weight: bold;
   text-transform: uppercase;
+  transition: background-color 0.3s, color 0.3s;
 }
-.close-btn:hover {
-  background: #0056b3;
-}
+
+/*.close-btn:hover {
+  background: #25aac6;
+  color: white;
+}*/
 @keyframes fadeIn {
   from {
     opacity: 0;
