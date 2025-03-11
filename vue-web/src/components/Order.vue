@@ -1,49 +1,91 @@
 <script setup lang="ts">
-  import { defineProps } from 'vue'
-  import type {IOrder} from "@/model/Order.ts";
-  defineProps<{
-    order: IOrder
-  }>();
+import {defineProps, ref} from 'vue'
+import type {IOrder} from "@/model/Order.ts";
+import Modal from "@/ui/Modal.vue";
+
+const props = defineProps<{ order: IOrder }>();
+
+const showModal = ref(false);
+
+const openModal = () => (showModal.value = true);
+const closeModal = () => (showModal.value = false);
 </script>
 
 <template>
-  <div class="order-card">
+  <div class="order-card" @click="openModal">
     <h1>Order #{{ order.number }}</h1>
     <div class="order-info">
       <p><strong>Customer:</strong> {{ order.customer }}</p>
       <p><strong>Date:</strong> {{ order.date }}</p>
     </div>
   </div>
+
+  <Modal :show="showModal" @close="closeModal">
+    <div class="order-details">
+      <div class="header">
+        <h2>Order #{{ order.number }}</h2>
+      </div>
+      <div class="info">
+        <p><strong>Customer:</strong> {{ order.customer }}</p>
+        <p><strong>Date:</strong> {{ order.date }}</p>
+      </div>
+      <div class="waypoints">
+        <h3>Waypoints</h3>
+        <ul>
+          <li v-for="(waypoint, index) in order.waypoints" :key="index">
+            {{ waypoint }}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </Modal>
 </template>
 
 <style scoped>
 .order-card {
-  background: #fff;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  padding: 1.2rem;
+  background: white;
+  padding: 15px;
   margin-bottom: 1rem;
-  max-width: 600px;
-  transition: transform 0.2s ease-in-out;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
-
 .order-card:hover {
-  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  border: 1px solid #333333;
 }
-
-h1 {
-  font-size: 1.4rem;
-  color: #333;
-  margin-bottom: 0.8rem;
+.order-details {
+  padding: 20px;
 }
-
-.order-info p {
-  margin: 0.5rem 0;
-  color: #555;
-  font-size: 1rem;
+.header {
+  background: #007bff;
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
 }
-
-.order-info strong {
-  color: #222;
+.info p {
+  font-size: 16px;
+  margin: 5px 0;
+}
+.waypoints {
+  margin-top: 15px;
+}
+.waypoints h3 {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+.waypoints ul {
+  list-style-type: none;
+  padding: 0;
+}
+.waypoints li {
+  background: #f8f9fa;
+  padding: 8px;
+  margin-bottom: 5px;
+  border-radius: 5px;
 }
 </style>

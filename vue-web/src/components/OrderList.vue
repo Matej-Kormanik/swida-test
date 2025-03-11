@@ -46,7 +46,6 @@
 
 <style scoped>
   .order-list {
-    border: 1px solid black;
     min-width: 600px
   }
 </style>
