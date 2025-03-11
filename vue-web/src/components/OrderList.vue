@@ -24,6 +24,12 @@
     return params;
   }
 
+  const resetFilters = () => {
+    orderNumberFilter.value = "";
+    customerFilter.value = "";
+    getOrders();
+  }
+
   const getOrders = async () => {
     try {
       const ordersResponse = await api.get<IOrder[]>('/orders/', {params: getFilters()});
@@ -36,7 +42,6 @@
       loading.value = false;
     }
   }
-  // watch([orderNumberFilter, customerFilter], getOrders, { deep: true });
   watch(() => props.refresh, getOrders);
   onMounted(getOrders);
 </script>
@@ -49,6 +54,7 @@
       <input v-model="orderNumberFilter" placeholder="Filter by Order Number" />
       <input v-model="customerFilter" placeholder="Filter by Customer" />
       <button @click="getOrders">Apply Filters</button>
+      <button @click="resetFilters">Reset Filters</button>
     </div>
 
     <p v-if="loading">Loading...</p>
