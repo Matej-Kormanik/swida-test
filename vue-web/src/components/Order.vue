@@ -2,6 +2,7 @@
 import {defineProps, ref} from 'vue'
 import type {IOrder} from "@/model/Order.ts";
 import Modal from "@/ui/Modal.vue";
+import {formatDate} from "@/config/utils.ts";
 
 const props = defineProps<{ order: IOrder }>();
 
@@ -16,7 +17,7 @@ const closeModal = () => (showModal.value = false);
     <h1>Order #{{ order.number }}</h1>
     <div class="order-info">
       <p><strong>Customer:</strong> {{ order.customer }}</p>
-      <p><strong>Date:</strong> {{ order.date }}</p>
+      <p><strong>Date:</strong> {{ formatDate(order.date) }}</p>
     </div>
   </div>
 
@@ -27,13 +28,14 @@ const closeModal = () => (showModal.value = false);
       </div>
       <div class="info">
         <p><strong>Customer:</strong> {{ order.customer }}</p>
-        <p><strong>Date:</strong> {{ order.date }}</p>
+        <p><strong>Date:</strong> {{ formatDate(order.date) }}</p>
       </div>
       <div class="waypoints">
         <h3>Waypoints</h3>
         <ul>
-          <li v-for="(waypoint, index) in order.waypoints" :key="index">
-            {{ waypoint }}
+          <li v-for="waypoint in order.waypoints" :key="waypoint.id">
+            <p><strong>Type:</strong> {{ waypoint.type }}</p>
+            <p><strong>Location:</strong> {{ waypoint.location }}</p>
           </li>
         </ul>
       </div>

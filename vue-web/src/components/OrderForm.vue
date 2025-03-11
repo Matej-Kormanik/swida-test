@@ -176,14 +176,19 @@ const resetForm = ()=> {
 }
 .show-button {
   padding: 12px;
-  background-color: #25aac6;
-  color: #fff;
+  background-color: transparent; /* Remove background */
+  color: #25aac6; /* Set text color */
   font-size: 16px;
-  border: none;
+  border: 2px solid #25aac6; /* Add border */
   border-radius: 5px;
   cursor: pointer;
   margin-top: 20px;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.show-button:hover {
+  background-color: #25aac6;
+  color: #fff;
 }
 .submit-button {
   padding: 12px;
